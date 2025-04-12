@@ -11,7 +11,7 @@ from django.views.decorators.http import require_POST
 # Create your views here.
 # Note that repeated site links should not be accepted. Check DB.
 def Web_Analysis(request):
-    template = loader.get_template('testProcess.html')
+    template = loader.get_template('web.html')
     return HttpResponse(template.render())
 
 @require_POST
@@ -39,7 +39,9 @@ def process_data(request):
                 )
                 new_entry.save()
                 print("Entry saved to database:", new_entry)
-                resultContext = {'myResults': new_entry}
+                resultContext = {
+                    'myResults': new_entry
+                }
                 return HttpResponse(resultTemplate.render(resultContext))
             except Exception as e:
                 print(f"Error occurred: {e}")

@@ -1,16 +1,11 @@
 from django.http import HttpResponse
 from django.template import loader
-# Note that repeated site links should not be accepted. Check DB.
-
-
-from django.http import HttpResponse
 from django.shortcuts import render
-from django.template import loader
-from scripts.tempScript import analyze_data
 from datetime import datetime
-from .models import WebPage  # Import the model
+from .tempScript import analyze_data
+from .models import Network
 from django.views.decorators.http import require_POST
-
+# Note that repeated site links should not be accepted. Check DB.
 
 # Create your views here.
 def Net_Analysis(request):
@@ -20,7 +15,7 @@ def Net_Analysis(request):
 @require_POST
 def process_data(request):
     if request.method == "POST":
-        data = request.POST.get("data")
+        data = request.POST.get("networkInfo")
         if data:    # if data passed successfully.
             result = analyze_data(data)
             resultTemplate = loader.get_template('results.html')
@@ -29,13 +24,13 @@ def process_data(request):
             currentTime = datetime.now()  # Current datetime
             formattedTime = currentTime.time()
 
-            new_entry = WebPage(
+            new_entry = Network(
                 placeHolder=result,
                 time_entered=formattedTime,
             )
 
             resultContext = {
-                'myResults' : new_entry,
+                'myResults' : new_entry
             }
 
             new_entry.save()

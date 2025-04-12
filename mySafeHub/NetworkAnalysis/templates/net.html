@@ -1,6 +1,11 @@
 <form action="/net/process/" method="POST">
-    {% csrf_token %}
-    <input type="text" name="data" placeholder="Enter data">
-    <button type="submit" name='csrfmiddlewaretoken'>Process</button>
-  </form>
-  
+  <!-- {% csrf_token %} -->
+  <input type="text" name="networkInfo" placeholder="Enter IDEK">
+  <br>
+  <br>
+  <button type="submit" id="addressToTest">Process</button>
+  <br>
+  <br>
+  <a href="/">Go Home</a>
+  <!-- Look up how to input a list in HTML -->
+</form>
