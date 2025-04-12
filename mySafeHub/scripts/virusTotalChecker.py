@@ -42,8 +42,6 @@ API_KEY = os.getenv("VIRUS_TOTAL_API_KEY")
 # ////////////////////////////////// START Initiate the parser
 
 parser = argparse.ArgumentParser(description="Python Automated VT API v3 IP address and URL analysis 2.0 by Brett Fullam")
-parser.add_argument("-s", "--single-entry", help="ip or url for analysis")
-parser.add_argument("-i", "--ip-list", help="bulk ip address analysis")
 parser.add_argument("-u", "--url-list", help="bulk url analysis")
 parser.add_argument("-V", "--version", help="show program version", action="store_true")
 
@@ -184,15 +182,9 @@ def urlReport(arg):
 
     # amend dataframe with the updated last_analysis_date value stored in time_formatted that was converted from epoch to human readable
     dataframe.loc['last_analysis_date',:] = time_formatted
-
     # sort dataframe index in alphabetical order to put the community score at the top
     dataframe.sort_index(inplace = True)
-
-    # set html to a global value to share the stored value with other functions
-    global html
-
-    # dataframe is output as an html table, and stored in the html variable
-    html = dataframe.to_html(render_links=True, escape=False)
+    return dataframe
 
 # ////////////////////////////////// END URL REPORT REQUEST
 
@@ -201,11 +193,11 @@ def urlReport(arg):
 # ////////////////////////////////// START IMPORT URL LIST
 
 # this function will handle importing a user defined list of urls, validate each url, and store them in an array called lst.  Then each validated entry will be submitted to the urlReport() function, and an html table will be returned for each of them and stored in an array called html_table_array. 
+"""
+def urlReportLst(args):
 
-def urlReportLst(arg):
-    print("Option 2:")
     # open user defined list from file path/name
-    with open(arg) as fcontent:
+    while next(args):
         fstring = fcontent.readlines()
     # regex statement to validate/normalize the content of the user defined list
     pattern = re.compile(r'(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?')
@@ -238,29 +230,143 @@ def urlReportLst(arg):
 
     # update html variable with our array of html tables stored in html_table_array for use with the outputHTML() function
     html = html_table_array
+"""
+# ////////////////////////////////// START OUTPUT TO HTML
+
+# this function will take either a single html table or an array of html tables, and write them to a CSS styled html file called "report.html"
+
+def outputHTML():
+
+    # save html with css styled boilerplated code up to the first <body> tag to a variable named "header"
+    header = """<!DOCTYPE html>
+    <html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automated VirusTotal Analysis Report | API v3</title>
+        <style>
+            body {
+            font-family: Sans-Serif;
+            color: #1d262e;
+            }
+            h1 {
+                font-size: 1.25em;
+                margin: 35px 0 0 30px;
+            }
+            h2 {
+                font-size: .75em;
+                font-weight:normal;
+                margin: 5px 0 15px 30px;
+                color: #7d888b;
+            }
+            h3 {
+                font-size: 1em;
+                font-weight:normal;
+                margin: 0 0 20px 30px;
+                color: #7d888b;
+            }
+            table {
+                text-align: left;
+                width: 90%;
+                border-collapse: collapse;
+                border: none;
+                padding: 0;
+                margin-left: 20px;
+                margin-bottom: 40px;
+                max-width: 780px;
+            }
+            th { 
+                text-align: left;
+                border:none;
+                padding: 10px 0 5px 10px;
+                margin-left: 10px;
+            }
+            tr { 
+                text-align: left;
+                border-bottom: 1px solid #ddd;
+                border-top: none;
+                border-left: none;
+                border-right: none;
+                padding-left: 10px;
+                margin-left: 0;
+            }
+            td { 
+                border-bottom: none;
+                border-top: none;
+                border-left: none;
+                border-right: none;
+                padding-left: 10px;
+            }
+            tr th {
+                padding: 10px 10px 5px 10px;
+            }
+
+        </style>
+    </head>
+    <body>
+    <h1 class="reportHeader">Automated VirusTotal Analysis Report</h1>
+    <h2>VirusTotal API v3</h2>
+    """
+    # add report timestamp
+    report_timestamp = str("<h3>" + report_time + "</h3>")
+
+    # save html closing </ body> and </ html> tags to a variable named "footer"
+    footer = """
+        </body>
+        </html>
+    """
+    # create and open the new report.html file
+    text_file = open("report.html", "w")
+    text_file.write(header)
+    text_file.close()
+
+    # open and append report.html with the human-readable date time stored in the report_timestamp variable
+    text_file = open("report.html", "a") # append mode
+    text_file.write(report_timestamp)
+    text_file.close()
+
+    # open and append report.html with a single html table from urlReport(), or as an array of html tables returned by urlReportLst or urlReportIPLst
+    text_file = open("report.html", "a") # append mode
+    # iterate through the html array and write all the html tables to report.html
+    global html
+    for x in html:
+        text_file.write(x)
+    text_file.close()
+
+    # open and append report.html with the closing tags stored in the footer variable
+    text_file = open("report.html", "a") # append mode
+    text_file.write(footer)
+    text_file.close()
+    
+    return text_file
+"""
+
+# ////////////////////////////////// END OUTPUT TO HTML
+
+
+
 
 # ////////////////////////////////// START Read arguments from the command line
 """
 args = parser.parse_args()
 
+
 # Check for --single-entry or -s
 if args.single_entry:
     urlReport(args.single_entry)
     print(dataframe)
-    outputHTML()
-# Check for --ip-list or -i
-elif args.ip_list:
-    urlReportIPLst(args.ip_list)
-    outputHTML()
 # Check for --url-list or -u
+'''
 elif args.url_list:
     urlReportLst(args.url_list)
     outputHTML()
+
 # Check for --version or -V
 elif args.version:
     print("VT API v3 IP address and URL analysis 2.0")
 # Print usage information if no arguments are provided
 else:
-    print("usage: vt-ip-url-analysis.py [-h] [-s SINGLE_ENTRY] [-i IP_LIST] [-u URL_LIST] [-V]")
-"""
+    print("usage: virusTotalChecker.py [-h] [-s SINGLE_ENTRY] [-i IP_LIST] [-u URL_LIST] [-V]")
+'''
 # ////////////////////////////////// END Read arguments from the command line

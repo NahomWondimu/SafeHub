@@ -1,6 +1,11 @@
 <form action="/web/process/" method="POST">
-    {% csrf_token %}
-    <input type="text" name="data" placeholder="Enter data">
-    <button type="submit" name='csrfmiddlewaretoken'>Process</button>
+    <!-- {% csrf_token %} -->
+    <input type="url" id="addressToTest" name="addressToTest" placeholder="Enter address to test">
+    <br>
+    <br>
+    <button type="submit" id="addressToTest">Process</button>
+    <br>
+    <br>
+    <!-- Look up how to input a list in HTML -->
   </form>
   
