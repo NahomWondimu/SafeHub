@@ -1,0 +1,6 @@
+<form action="/web/process/" method="POST">
+    {% csrf_token %}
+    <input type="text" name="data" placeholder="Enter data">
+    <button type="submit" name='csrfmiddlewaretoken'>Process</button>
+  </form>
+  
