@@ -12,6 +12,7 @@ def Net_Analysis(request):
     template = loader.get_template('net.html')
     return HttpResponse(template.render())
 
+# if returned data 'has' "Error", send up error message.
 @require_POST
 def process_data(request):
     if request.method == "POST":

@@ -1,6 +1,12 @@
 <form action="/net/process/" method="POST">
   <!-- {% csrf_token %} -->
-  <input type="text" name="networkInfo" placeholder="Enter IDEK">
+  <label for="features" name="networkInfo">Choose a feature:</label>
+  <select name="features">
+    <option value="netDevices">Device Search</option>
+    <option value="netPackets">Packet Scooper</option>
+    <option value="netPorts">Port Scanner</option>
+    <option value="netRouter">Wifi Router Condition</option>
+  </select>
   <br>
   <br>
   <button type="submit" id="addressToTest">Process</button>
