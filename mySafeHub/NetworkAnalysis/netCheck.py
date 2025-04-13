@@ -137,27 +137,3 @@ def portscanner():
     print(df)
     return df
 
-# Helper method
-def get_default_gateway_ip():
-    gws = netifaces.gateways()
-    if 'default' in gws and netifaces.AF_INET in gws['default']:
-        return gws['default'][netifaces.AF_INET][0]
-    return None
-
-def gatewayScanner():
-    scanner = nmap.PortScanner()
-
-    # Define target IP address or hostname
-    target = get_default_gateway_ip()
-    if target is None:
-        return "Error"
-
-    scanner.scan(target, arguments='-sn')   # No port scanning. We just want gateway.
-    
-
-    dataGathered = {
-        'host': target,
-        'state': scanner[target].state(),
-    }
-
-    return dataGathered
